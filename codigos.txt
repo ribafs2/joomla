@@ -1,0 +1,142 @@
+Copiar e colar código ou texto de um PDF geralmente acarreta uma iindentação horrível e até erros ao mudar uma linha de posição.
+
+Portanto este arquivo tem a intenção de oferecer o código em texto para um copiar/colar mais eficiente
+
+Página 11
+
+sudo nano loja
+
+Copiar o conteúdo abaixo para o arquivo
+
+server {
+	listen 80;
+	listen [::]:80;
+	root /var/www/loja;
+	index index.html index.php;
+	server_name loja.ribamar.net.br;
+	
+	location / {
+		try_files $uri $uri/ /index.php?$args;
+	}
+	
+	location ~ \.php$ {
+		include snippets/fastcgi-php.conf;
+		fastcgi_pass unix:/run/php/php8.2-fpm.sock;
+	}
+}
+
+Adicionar ao SSL
+
+sudo apt update
+sudo apt install snapd -y
+sudo snap install --classic certbot
+sudo ln -s /snap/bin/certbot /usr/bin/certbot
+sudo certbot –nginx
+
+
+Página 18
+
+Na caixa de texto que aparece entre com o códico abaixo:
+
+<div class="container">
+    <div class="row">
+        <div class="col">
+            <div class="row"><a href="index.php?option=com_content&amp;view=article&amp;id=2"><img src="images/1.jpeg" alt="2" width="200" height="250" class="float-none" /></a></div>
+            <div class="row"><strong>Computaador 1<br /></strong></div>
+            <div class="row"><a href="index.php?option=com_content&amp;view=article&amp;id=2">Detalhes</a></div>
+        </div>
+        <div class="col">
+            <div class="row"><a href="index.php?option=com_content&amp;view=article&amp;id=20"><img src="images/2.jpeg" alt="" width="200" height="250" class="float-none" /></a></div>
+            <div class="row"><strong>Computaador 2<br /></strong></div>
+            <div class="row"><a href="index.php?option=com_content&amp;view=article&amp;id=20">Detalhes</a></div>
+        </div>
+        <div class="col">
+            <div class="row"><a href="index.php?option=com_content&amp;view=article&amp;id=26"><img src="images/3.jpeg" alt="7" width="200" height="250" class="float-none" /></a></div>
+            <div class="row"><strong>Computaador 3<br /></strong></div>
+            <div class="row"><a href="index.php?option=com_content&amp;view=article&amp;id=26">Detalhes</a></div>
+        </div>
+        <div class="col">
+            <div class="row"><a href="index.php?option=com_content&amp;view=article&amp;id=22"><img src="images/4.jpeg" alt="" width="200" height="250" class="float-none" /></a></div>
+            <div class="row"><strong>Computaador 4</strong></div>
+            <div class="row"><a href="index.php?option=com_content&amp;view=article&amp;id=22">Detalhes</a></div>
+        </div>
+    </div>
+</div>
+
+
+Páginas 19 e 20
+
+Conteúdo
+<h3>Computadores desktop</h3>
+<div class="container">
+    <div class="row">
+        <div class="col">
+            <div class="row"><a href="index.php?option=com_content&amp;view=article&amp;id=2"><img src="images/1.jpeg" alt="2" width="200" height="250" class="float-none" /></a></div>
+            <div class="row"><strong>Computaador 1<br /></strong></div>
+            <div class="row"><a href="index.php?option=com_content&amp;view=article&amp;id=2">Detalhes</a></div>
+        </div>
+        <div class="col">
+            <div class="row"><a href="index.php?option=com_content&amp;view=article&amp;id=20"><img src="images/2.jpeg" alt="" width="200" height="250" class="float-none" /></a></div>
+            <div class="row"><strong>Computaador 2<br /></strong></div>
+            <div class="row"><a href="index.php?option=com_content&amp;view=article&amp;id=20">Detalhes</a></div>
+        </div>
+        <div class="col">
+            <div class="row"><a href="index.php?option=com_content&amp;view=article&amp;id=26"><img src="images/3.jpeg" alt="7" width="200" height="250" class="float-none" /></a></div>
+            <div class="row"><strong>Computaador 3<br /></strong></div>
+            <div class="row"><a href="index.php?option=com_content&amp;view=article&amp;id=26">Detalhes</a></div>
+        </div>
+        <div class="col">
+            <div class="row"><a href="index.php?option=com_content&amp;view=article&amp;id=22"><img src="images/4.jpeg" alt="" width="200" height="250" class="float-none" /></a></div>
+            <div class="row"><strong>Computaador 4</strong></div>
+            <div class="row"><a href="index.php?option=com_content&amp;view=article&amp;id=22">Detalhes</a></div>
+        </div>
+    </div>
+</div>
+
+
+Ao editar o artigo inicial o código da primeira coluna deve ficar assim:
+…
+<div class="row"><a href="index.php?option=com_content&amp;view=article&amp;id=3"><img class="float-none" src="images/desktops.webp" alt="2" width="940" height="534"></a></div>
+<div class="row"><strong>Computadores Desktop<br></strong></div>
+<div class="row"><a href="index.php?option=com_content&amp;view=article&amp;id=3">Detalhes</a></div>
+,,,
+
+
+Página 26
+
+Criar script no servidor
+
+mkdir backups
+
+# Backup do banco
+mysqldump -uroot -pzmxn1029M@ loja_db > /home/ribafs/backups/loja_$(date +"%Y_%m_%d").sql
+cd /var/www
+# Backup dos arquivos
+zip -rq /home/ribafs/backups/loja_$(date +"%Y_%m_%d").zip loja
+
+nano .bashrc
+
+alias backup="rsync -av --ignore-existing --progress -e 'ssh -p 60522' ribafs@loja.com.br:/home/ribafs/backups/* /backup/"
+
+
+Script para permissões do /var/www
+
+sudo nano /usr/local/bin/perms
+
+#!/bin/sh
+clear;
+echo "Aguarde enquanto configuro as permissões do /var/www/$1";
+echo "";
+chown -R ribafs:www-data /var/www/$1;
+find /var/www/$1 -type d -exec chmod 775 {} \;
+find /var/www/$1 -type f -exec chmod 664 {} \;
+find /var/www/$1 -type d -exec chmod g+s {} \;
+echo "";
+echo "Concluído!";
+
+sudo chmod +x /usr/local/bin/perms
+
+Usando
+
+sudo perms (varre toda a /var/www)
+sudo perms html(varre /var/www/html)

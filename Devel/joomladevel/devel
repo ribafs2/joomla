@@ -1,0 +1,91 @@
+if(JDEBUG)
+{
+    // whatever debugging code you want to run, e.g.
+    JLog::add('my debug message', JLog::DEBUG, 'my-debug-category');
+}
+
+alias jclean="rm -rf administrator/templates/atum/css; \
+rm -rf templates/cassiopeia/css; \
+rm -rf administrator/templates/system/css; \
+rm -rf templates/system/css; \
+rm -rf media/; \
+rm -rf node_modules/; \
+rm -rf libraries/vendor/; \
+rm -f administrator/cache/autoload_psr4.php; \
+rm -rf installation/template/css"
+alias jinstall="jclean; composer install; npm ci"
+
+
+
+
+The procedure works as follows:
+
+    Take a complete backup of the live-site via Akeeba Backup, incl. the whole DB.
+    Create a new domain/subdomain/staging environment
+    Create a new empty DB and a DB-user
+    Copy the backup-archive/-s (.jpa-file and .jp[0-9]-files) to your staging environment
+    Unpack the archive with Akeeba Kickstart
+    Run the ANGIE-installer, make sure to adjust DB-connection and -credentials to the new empty DB created in step 3
+    Adjust tmp- and log-path in ANGIE to match the new environment
+    Finish the restoration of the ported DB and files through Akeeba Backup.
+    Edit the two files civicrm.settings.php, one in administrator/components/com_civicrm and the second in components/com_civicrm: declare the new DB-connection and -credentials in those two files
+
+That's it. You're done and should be able to run CiviCRM from your staging environment now.
+
+
+Component Development Environment
+Joseph J. Geller
+Joseph J. Geller
+Joseph J. Geller
+SEO & Website Data Analytics Professional at Stony Creek Consulting, LLC
+Publicado em 30 de set. de 2018
++ Siga
+
+Joomla! development is often done locally using an integrated development environment or IDE installed on a PC desktop or laptop. I feel it is the preferred development environment and one reason is security. Security can be obtained on a server but the effort can be kept to a minimum providing a good firewall is being used along with anti-malware software that is scanning in the background. Testing on a server is mandatory before delivering any project but developing locally with the following suggested setup greatly reduces the time required to build Joomla! and WordPress web sites. It does the same for your own development projects. I have added a component I am very excited about which also speeds up the development process greatly called Joomla! Component Builder.
+Local Development Environment Essentials
+
+    A local development environment like WAMP with XDEBUG capabilities.
+    Joomla! Component Builder.
+    NetBeans or a similar Integrated Development Environment (IDE) with  XDEBUG capabilities and GitHub versioning.
+    Chrome plus its Developer Tools and developer extensions or, others like Firefox with similar features and add-ons.
+    Joomla! Debug, especially its Stack Trace, and XDEBUG compatibly including links to the source in each trace
+    Joomla J!Dump which works well for dumping within Joomla! components instead of using PHP echo and var_dump.
+    Developer Tools in Chrome is a very good source for debugging JavaScript in real-time with features similar to NetBeans debugger.
+    Developer Tools in Chrome has many other features to assist you with debugging and tweaking your site on-the fly.
+
+Debugging Basics
+
+Debugging tools are an essential part of any developer's IDE. Spending hours trying to locate a run-time bug by reading through hundreds or perhaps thousands of lines of code to find a single misplaced character is exasperating and non-productive. Good debugging skills usually allow one to locate the offending line or lines of code in minutes. It's usually easy to correct an issue, it's almost always difficult to find where it occurred, especially with all the interconnections one finds in a component using the MVC paradigm, much less ones using the Joomla! API extensively such as Joomla Component Builder does.
+
+In this blog I am focusing on Joomla! and in another blog I'll be discussing WordPress. The MVC paradigm is another focal point in this blog but the same principles apply to any development paradigm or platform such as Microsoft .Net, Windows and Visual Studio. The tools are just different as is the platform they are being used on but all have common features and functions to reach the common goal which is getting the project delivered on time, according to specifications and within budget. These tips should facilitate your analysis and your development efforts no matter what the environment is. Some of the functionality offered by a good IDE debugger are:
+
+    Single stepping through code while it executes
+    Adding breakpoints and watches to suspend execution and examine contents of variables
+    Stack traces that show the path of each script and resource used during execution
+    Watches to examine the contents of variables based on their contents
+    A dump of all variables in play while single stepping through the code
+    Easily examining classes, methods, and properties including their source on the fly during execution
+
+There are many other features and functionalities not mentioned here. Effective debugging is indispensable during the development cycle of a component. It allows you to quickly identify and resolve run-time errors. Make use of Joomla's! built in debugging enabled in its configuration settings. The stack trace it displays, including links if using XDEBUG, are also indispensable. Plus, it integrates with an IDE like NetBeans using the Chrome NetBeans extension.
+
+Getting XDEBUG to work with your browser and IDE can be a daunting task. This guide and another one have excellent tips on using XDEBUG with NetBeans and other IDE's and include using it with a browser. They also have instructions on how to troubleshoot the default port it uses and how to differentiate if the default port (9000) used by XDEBUG is the issue such as it is blocked by your firewall and needs a rule to punch through it or the required lines in the php.ini aren't there or are incorrect, or some other reason.
+
+It is also recommended to use this excellent tool as it creates the necessary php.ini lines you will need to replace what NetBeans puts there which is just a stub except for the line that loads the correct DLL. The two links before that one are for understanding XDEBUG and what must be done to install it properly plus excellent troubleshooting instructions. The php.ini lines both suggest are not needed usually so use the php.ini lines generated by the tool in the last link in this paragraph.
+
+WAMP allows switching between 5.x and 7.x versions of PHP. To facilitate XDEBUG WAMP uses a different XDEBUG DLL in the php.ini that WAMP switches between when different PHP versions are used. WAMP current version allows switching between that last 5.x version and three 7.x versions. So, do not change what was installed by WAMP at the end of php.ini. Comment out all the lines underneath using a semicolon (;) in each php.ini used by WAMP for each PHP version it allows you to switch to which is very nice for let's say looking at latest Joomla! version, e.g Joomla! 4 alpha.
+
+Not using the correct DLL is the most common error when using XDEBUG and WAMP sets this up correctly. The other error that is very common is not having the Visual C++ Packages installed for the corresponding version of PHP that was compiled. Let WAMP do this for you. The previous link appears to be the best one to use for a comprehensive installation of WAMP that is a one-page-stop for everything you need. Since there are many versions of WAMP, although you should be using the current one, it will not hurt to install all of the Visual C++ Packages. It takes some time and you must install the 32 and 64 bit versions and I suggest doing it in date order starting with the earliest and ending with the latest. Read through the page completely so you install everything that is required. Follow all the recommendations that are also on the page.
+
+You can install all of the Visual C++ Packages as you will have then have whatever version of the package is needed for whatever version you have of PHP. Do not worry that two are French. They work fine but you may need to be sure you click the OK button instead of Cancel as they are in French. Other than that all else on the page installs in English. The dependency the PHP version has with each Visual C++ Package version depends on the version of the Visual C++ Package that was used to compile the PHP version. Like anything worth the effort, do the work and read the information in the sites I have mentioned previously.
+
+Often, XDEBUG will work if you just install it and let the installation took care of everything. Try doing that first and if everything works correctly you have the right Visual C++ Package installed and php.ini had the correct XDEBUG section that works with it. If you switch PHP versions and it stops working then you will need to ensure the environment is set up correctly for that version. This will not occur if you install all the Visual C++ Packages 32 and 64 bit. But it seems like many have issues with it as they depended on the install to do everything, including their environment, despite switching to another version of PHP.
+
+XAMPP will install XDEBUG without much effort from you but WAMP is a much better environment to work in. The same applies for LAMP and MAMP. It is beyond the scope of this article to go into Linux and Mac operating systems also but the same concepts apply and many of the links also refer to these operating systems. Look for an article on MAMP will be published soon.
+
+This should get you started on having a development environment that facilitates not only Joomla! component development but many others. It also is an introduction to Joomla! Component Builder and its repository at GitHub. There are freely distributed components you can learn from at free JCB package keys.
+
+CREDITS
+
+Joomla! Component Builder is developed by Llewellyn Van Der Merwe. Stony Creek Consulting, LLC is not affiliated with or endorsed by the Joomla!® Project or Open Source Matters. The Joomla!® name and logo is used under a limited license granted by Open Source Matters, the trademark holder in the United States and other countries.
+
+https://manual.joomla.org/docs/get-started/

@@ -1,0 +1,6 @@
+key - acesso
+value - ribamarpodeentrar
+
+ http://mysite.com/administrator/?keyname=keyvalue
+
+http://backup/joomla512/administrator?acesso=ribamarpodeentrar
